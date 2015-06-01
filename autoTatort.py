@@ -24,7 +24,7 @@ QUALITY = 3
 #set to False if you don't want subtitles
 SUBTITLES = True
 
-TARGET_DIR = "/data/tatort/"
+TARGET_DIR = u"/data/tatort/"
 
 
 feed = feedparser.parse( RSS_URL )
@@ -50,27 +50,27 @@ for item in items:
       html = response.read()
 
       if 'http://www.ardmediathek.de/-/stoerung' == response.geturl():
-        print "Could not get item with title '" + title + "'. Got redirected to '" + response.geturl() + "'. This is probably because the item is still in the RSS feed, but not available anymore."
+        print u"Could not get item with title '" + title + "'. Got redirected to '" + response.geturl() + "'. This is probably because the item is still in the RSS feed, but not available anymore."
         continue
 
       try:
         media = json.loads(html)
       except ValueError as e:
         print e
-        print "Could not get item with title '" + title + "'. Original item link is '" + link + "' and parsed docId[0] is '" + docId[0] + "', but html response from '" + docUrl + "' was '" + html + "'"
+        print u"Could not get item with title '" + title + "'. Original item link is '" + link + "' and parsed docId[0] is '" + docId[0] + "', but html response from '" + docUrl + "' was '" + html + "'"
         continue
 
       if '_mediaArray' not in media or len(media["_mediaArray"]) == 0:
-        print "Skipping " + title + " because it does not have any mediafiles"
+        print u"Skipping " + title + " because it does not have any mediafiles"
         continue
       mediaLinks = media["_mediaArray"][1]["_mediaStreamArray"]
 
       for mediaLink in mediaLinks:
          if QUALITY == mediaLink["_quality"]:
             mediaURL = mediaLink["_stream"]
-            fileName = "".join([x if x.isalnum() or x in "- " else "" for x in title])
+            fileName = u"".join([x if x.isalnum() or x in "- " else "" for x in title])
             urlretrieve(mediaURL, TARGET_DIR + fileName + ".mp4")
-            print "Downloaded '" + title + "'"
+            print u"Downloaded '" + title + "'"
 
             #download subtitles
             try:
