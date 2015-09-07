@@ -3,6 +3,7 @@ import sys, codecs, locale
 import feedparser
 import datetime
 import urlparse
+import os.path
 import re
 from urllib import urlopen, urlretrieve
 import json
@@ -47,7 +48,7 @@ for item in items:
    day = item["date_parsed"][2];
    feedDate = datetime.date(item["date_parsed"][0], item["date_parsed"][1], item["date_parsed"][2])
 
-   if feedDate == today:
+   if (today - feedDate).days < 7:
       title = item["title"]
       link = item["link"]
       parsed = urlparse.urlparse(link)
@@ -117,9 +118,14 @@ for item in items:
               mediaURL = stream
 
             fileName = "".join([x if x.isalnum() or x in "- " else "" for x in title])
+
+            if os.path.isfile(TARGET_DIR + fileName + ".mp4"):
+              print "Already downloaded: ", mediaURL, TARGET_DIR + fileName + ".mp4"
+              continue
+
+            print "Downloading '" + title + "'"
             urlretrieve(mediaURL, TARGET_DIR + fileName + ".mp4")
             downloadedSomething = 1
-            print "Downloaded '" + title + "'"
 
             #download subtitles
             try:
@@ -129,6 +135,7 @@ for item in items:
                  offset = media["_subtitleOffset"]
 
                 subtitleURL = 'http://www.ardmediathek.de/' + media["_subtitleUrl"]
+                print "Downloading subtitles for '" + title + "'"
                 urlretrieve(subtitleURL, TARGET_DIR + fileName + "_subtitleOffset_" + str(offset) + ".xml")
             except Exception as e:
               #print and resume with download
