@@ -17,6 +17,9 @@ sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout);
 
 RSS_URL = "http://www.ardmediathek.de/tv/Tatort/Sendung?documentId=602916&bcastId=602916&rss=true"
 
+#Optionally set a proxy server (with location inside germany):
+#os.environ['http_proxy'] = 'http://100.0.0.1:8000'
+
 # -1 = download highest quality available
 # 0.0 320x180 (53k audio)i
 # 1.0 512x288 (93k audio)
