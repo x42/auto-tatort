@@ -3,6 +3,7 @@ import sys, codecs, locale
 import feedparser
 import datetime
 import urlparse
+import re
 from urllib import urlopen, urlretrieve
 import json
 
@@ -70,6 +71,24 @@ for item in items:
       if '_mediaArray' not in media or len(media["_mediaArray"]) == 0:
         print "Skipping " + title + " because it does not have any mediafiles"
         continue
+
+      #ignore some contrib files
+      if re.search('H.rfassung', title):
+        print "Skipping " + title
+        continue
+      if re.search('Die Klassiker:', title):
+        print "Skipping " + title
+        continue
+      if re.search('Making-Of', title):
+        print "Skipping " + title
+        continue
+      if re.search('IFA:', title):
+        print "Skipping " + title
+        continue
+      if re.search('Tatort - Extra:', title):
+        print "Skipping " + title
+        continue
+
       mediaLinks = media["_mediaArray"][1]["_mediaStreamArray"]
 
       downloadQuality = QUALITY
